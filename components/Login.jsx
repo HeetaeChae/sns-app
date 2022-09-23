@@ -13,7 +13,7 @@ const FormWrapper = styled.div`
 const Login = () => {
   const dispatch = useDispatch();
   const onFinish = useCallback(() => {
-    dispatch(logIn());
+    dispatch(logIn(1));
   }, []);
   return (
     <>
