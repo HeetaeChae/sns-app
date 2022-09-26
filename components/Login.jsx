@@ -2,8 +2,9 @@ import { Form, Input, Button } from "antd";
 import { useCallback } from "react";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { logIn } from "../store/modules/login";
+import { logInReqeust } from "../store/modules/login";
 
 const FormWrapper = styled.div`
   margin-top: 30px;
@@ -12,8 +13,9 @@ const FormWrapper = styled.div`
 
 const Login = () => {
   const dispatch = useDispatch();
+  const login = useSelector((state) => state.login);
   const onFinish = useCallback(() => {
-    dispatch(logIn(1));
+    dispatch(logInReqeust());
   }, []);
   return (
     <>
@@ -55,13 +57,24 @@ const Login = () => {
               alignItems: "center",
             }}
           >
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ margin: "5px 20px" }}
-            >
-              로그인
-            </Button>
+            {login.isLoggingIn ? (
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ margin: "5px 20px" }}
+                loading
+              >
+                로그인
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ margin: "5px 20px" }}
+              >
+                로그인
+              </Button>
+            )}
             <Button type="primary" htmlType="submit">
               회원가입
             </Button>

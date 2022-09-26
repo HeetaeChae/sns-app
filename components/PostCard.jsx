@@ -20,19 +20,28 @@ const FormWrapper = styled(Form)`
 `;
 
 const PostCard = ({ post }) => {
-  const id = useSelector((state) => state.login.me && state.login.me.id);
+  const userId = useSelector(
+    (state) => state.login.user && state.login.user._id
+  );
+  const postId = useSelector(
+    (state) => state.post.writer && state.post.writer._id
+  );
+
   const [likeToggle, setLikeToggle] = useState(false);
   const onClickLikeToggle = useCallback(() => {
     setLikeToggle(!likeToggle);
-  }, []);
+  }, [likeToggle]);
+
   const [commentToggle, setCommentToggle] = useState(false);
   const onClickCommentToggle = useCallback(() => {
     setCommentToggle(!commentToggle);
-  }, []);
+  }, [commentToggle]);
+
   return (
     <>
       <Card
-        cover={<PostImages images={post.Images} />}
+        style={{ marginTop: "2rem" }}
+        cover={<PostImages images={post.images} />}
         actions={[
           <RetweetOutlined key="retweet" />,
           likeToggle ? (
@@ -44,7 +53,7 @@ const PostCard = ({ post }) => {
           <Popover
             content={
               <ButtonGroup>
-                {id && id === post.User.id ? (
+                {userId && userId === postId ? (
                   <>
                     <Button>수정</Button>
                     <Button>삭제</Button>
@@ -60,8 +69,8 @@ const PostCard = ({ post }) => {
         ]}
       >
         <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
+          avatar={<Avatar>{post.writer.nickname[0]}</Avatar>}
+          title={post.writer.nickname}
           description={post.content}
         ></Card.Meta>
       </Card>
@@ -74,12 +83,12 @@ const PostCard = ({ post }) => {
           <Form.Item>
             <List
               itemLayout="horizontal"
-              dataSource={post.Comments}
+              dataSource={post.comments}
               renderItem={(item) => (
                 <List.Item>
                   <List.Item.Meta
-                    avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
-                    title={item.User.nickname}
+                    avatar={<Avatar>{item.user.nickname[0]}</Avatar>}
+                    title={item.user.nickname}
                     description={item.content}
                   />
                 </List.Item>

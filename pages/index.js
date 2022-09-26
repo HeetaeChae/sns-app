@@ -19,12 +19,12 @@ const PostCardWrapper = styled.div`
 
 export default function Home() {
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
-  const mainPosts = useSelector((state) => state.post.mainPosts);
+  const posts = useSelector((state) => state.post.posts);
   return (
     <Layout>
       <PostFormWrapper>{isLoggedIn && <PostForm />}</PostFormWrapper>
       <PostCardWrapper>
-        {mainPosts.map((post) => (
+        {posts.map((post) => (
           <PostCard post={post} key={post.id} />
         ))}
       </PostCardWrapper>

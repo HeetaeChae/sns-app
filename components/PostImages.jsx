@@ -25,8 +25,6 @@ const PostImages = ({ images }) => {
     setModalToggle(!modalToggle);
   }, []);
 
-  console.log(images[0].src);
-
   if (images.length === 1) {
     return (
       <ImageWrapper>
@@ -61,7 +59,10 @@ const PostImages = ({ images }) => {
           alt="첫 번째 이미지"
         />
         <ButtonWrapper>
-          <Button onClick={onClickModalToggle}>
+          <Button
+            style={{ width: "10rem", height: "5rem", fontSize: "1rem" }}
+            onClick={onClickModalToggle}
+          >
             <SearchOutlined />더 보기
           </Button>
         </ButtonWrapper>

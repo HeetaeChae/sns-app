@@ -1,7 +1,8 @@
 import { Input, Button, Form } from "antd";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
-import { addPost } from "../store/modules/post";
+import { useSelector } from "react-redux";
+import { addPostRequest } from "../store/modules/post";
 
 const ButtonWrapper = styled.div`
   display: flex;
@@ -16,8 +17,10 @@ const ButtonStyle = styled(Button)`
 
 const PostForm = () => {
   const dispatch = useDispatch();
+  const post = useSelector((state) => state.post);
+
   const onFinish = () => {
-    dispatch(addPost());
+    dispatch(addPostRequest());
   };
 
   return (
@@ -26,9 +29,15 @@ const PostForm = () => {
         <Input.TextArea rows={8} />
         <ButtonWrapper>
           <ButtonStyle>이미지 업로드</ButtonStyle>
-          <ButtonStyle type="primary" htmlType="submit">
-            등록
-          </ButtonStyle>
+          {post.addPostLoadding ? (
+            <ButtonStyle type="primary" htmlType="submit" loading>
+              등록
+            </ButtonStyle>
+          ) : (
+            <ButtonStyle type="primary" htmlType="submit">
+              등록
+            </ButtonStyle>
+          )}
         </ButtonWrapper>
       </Form>
     </>

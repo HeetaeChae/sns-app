@@ -1,13 +1,10 @@
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { Avatar, Card } from "antd";
+import { LogoutOutlined } from "@ant-design/icons";
+import { Avatar, Card, Button } from "antd";
 import styled from "styled-components";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { logOut } from "../store/modules/login";
+import { logOutRequest } from "../store/modules/login";
 
 const UserWrapper = styled.div`
   margin-top: 30px;
@@ -18,8 +15,9 @@ const UserWrapper = styled.div`
 
 const User = () => {
   const dispatch = useDispatch();
+  const login = useSelector((state) => state.login);
   const onClickLogout = () => {
-    dispatch(logOut());
+    dispatch(logOutRequest());
   };
   return (
     <>
@@ -35,15 +33,23 @@ const User = () => {
             />
           }
           actions={[
-            <SettingOutlined key="setting" />,
-            <EditOutlined key="edit" />,
-            <EllipsisOutlined key="ellipsis" onClick={onClickLogout} />,
+            login.isLoggingOut ? (
+              <Button onClick={onClickLogout} loading>
+                <LogoutOutlined />
+                로그아웃
+              </Button>
+            ) : (
+              <Button onClick={onClickLogout}>
+                <LogoutOutlined />
+                로그아웃
+              </Button>
+            ),
           ]}
         >
           <Card.Meta
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-            title="Card title"
-            description="This is the description"
+            avatar={<Avatar>{login.user.nickname[0]}</Avatar>}
+            title={login.user.nickname}
+            description={login.user.email}
           />
         </Card>
       </UserWrapper>

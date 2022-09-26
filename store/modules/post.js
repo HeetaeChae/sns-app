@@ -1,51 +1,80 @@
-const dummyPost = {
-  id: 2,
-  content: "더미데이터 입니다.",
-  User: {
-    id: 1,
-    nickname: "채희태",
-  },
-  Images: [],
-  Comments: [],
-};
+import shortid from "shortid";
+import { faker } from "@faker-js/faker";
 
-const ADD_POST = "ADD_POST";
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
+export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
+export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
+export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
 
-export const addPost = () => {
+export const addPostRequest = () => {
   return {
-    type: ADD_POST,
+    type: "ADD_POST_REQUEST",
+  };
+};
+export const removePostRequest = (data) => {
+  return {
+    type: "REMOVE_POST_REQUEST",
+    data,
   };
 };
 
-const initialState = {
-  mainPosts: [
+const dummyPost = {
+  _id: shortid.generate(),
+  writer: {
+    _id: shortid.generate(),
+    nickname: faker.name.findName(),
+  },
+  content: faker.lorem.paragraph(),
+  images: [
     {
-      id: 1,
-      content: "첫 번째 게시글 #해시태그 #익스프레스",
-      User: {
-        id: 1,
+      src: faker.image.imageUrl(),
+    },
+    {
+      src: faker.image.imageUrl(),
+    },
+    {
+      src: faker.image.imageUrl(),
+    },
+  ],
+};
+
+const initialState = {
+  addPostLoadding: false,
+  addPostDone: false,
+  addPostError: false,
+  removePostLoading: false,
+  removePostDone: false,
+  removePostError: false,
+  posts: [
+    {
+      _id: 1,
+      writer: {
+        _id: 1,
         nickname: "채희태",
       },
-      Images: [
+      content: faker.lorem.paragraph(),
+      images: [
         {
-          src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyC3tks5LkwLlHEGt3N9IBZXcNggSWEy9MPaMF7PiGJw&s",
+          src: faker.image.imageUrl(),
         },
         {
-          src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyC3tks5LkwLlHEGt3N9IBZXcNggSWEy9MPaMF7PiGJw&s",
+          src: faker.image.imageUrl(),
         },
         {
-          src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyC3tks5LkwLlHEGt3N9IBZXcNggSWEy9MPaMF7PiGJw&s",
+          src: faker.image.imageUrl(),
         },
       ],
-      Comments: [
+      comments: [
         {
-          User: {
+          user: {
             nickname: "이순신",
           },
           content: "안녕하세요 반갑습니다",
         },
         {
-          User: {
+          user: {
             nickname: "홍길동",
           },
           content: "안녕하세요 처음뵙겠습니다",
@@ -53,16 +82,48 @@ const initialState = {
       ],
     },
   ],
-  imagePaths: [],
-  postAdded: false,
 };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_POST:
+    case ADD_POST_REQUEST:
       return {
         ...state,
-        mainPosts: [dummyPost, ...state.mainPosts],
+        addPostLoadding: true,
+      };
+    case ADD_POST_SUCCESS:
+      return {
+        ...state,
+        addPostLoadding: false,
+        addPostDone: true,
+        posts: [dummyPost, ...state.posts],
+      };
+    case ADD_POST_FAILURE:
+      return {
+        ...state,
+        addPostLoadding: false,
+        addPostError: true,
+      };
+    case REMOVE_POST_REQUEST:
+      return {
+        ...state,
+        removePostLoadding: true,
+      };
+    case REMOVE_POST_SUCCESS:
+      const Idx = state.posts.findIndex((post) => post.id === action.data.id);
+      const removePost = { ...state.posts[Idx] };
+      const removePosts = state.posts.filter((post) => post !== removePost);
+      return {
+        ...state,
+        removePostLoadding: false,
+        removePostDone: true,
+        posts: [...removePosts],
+      };
+    case REMOVE_POST_FAILURE:
+      return {
+        ...state,
+        removePostLoadding: false,
+        removePostError: true,
       };
     default:
       return state;
